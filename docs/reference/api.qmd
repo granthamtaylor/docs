@@ -23,6 +23,7 @@ Public constructors, helpers, enums, callbacks, and extension base classes expor
 | | |
 | --- | --- |
 | [Array](Array.qmd#json2vec.Array) | Repeated nested object group in a `json2vec` schema. |
+| [Mask](Mask.qmd#json2vec.Mask) | Structured masking policy attached to an `Array`. |
 | [Hyperparameters](Hyperparameters.qmd#json2vec.Hyperparameters) | Serializable schema and training metadata used to build a `Model`. |
 | [where](where.qmd#json2vec.where) | Start a schema predicate against a node attribute. |
 

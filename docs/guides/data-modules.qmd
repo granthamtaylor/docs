@@ -293,6 +293,31 @@ are compiled by `StreamingDataModule`.
 
 ## Preprocessors
 
+Preprocessors are optional. If none is configured, observations pass through
+unchanged. Use a query when the source shape is stable and selection is enough.
+Use a preprocessor when records need Python logic before schema queries run:
+type coercion, renaming, source-specific cleanup, sorting, windowing, session
+splitting, or derived fields.
+
+A transformation preprocessor returns one normalized observation for each input
+observation:
+
+```{python .marimo}
+#| echo: true
+#| output: true
+
+@j2v.preprocess
+def normalize_transaction(record: dict) -> dict:
+    return {
+        "amount": float(record["transaction"]["amount_usd"]),
+        "merchant": record["transaction"]["merchant_name"].strip().lower(),
+        "label": record["outcome"],
+    }
+```
+
+After preprocessing, default queries are inferred against the returned record,
+not the original raw record. The schema remains the model-facing contract.
+
 All data modules accept the same preprocessor forms:
 
 ```{python .marimo}
@@ -308,8 +333,50 @@ datamodule = j2v.PolarsDataModule(
 ```
 
 The keyword arguments after data module options are passed to the preprocessor.
-Use this for stable input shaping such as type normalization, sorting, windowing,
-or deriving fields before query paths run.
+Use this for request-time-dependent shaping such as trailing windows:
+
+```{python .marimo}
+#| echo: true
+#| output: true
+
+datamodule = j2v.PolarsDataModule(
+    model=model,
+    train=records,
+    preprocessor=build_windows,
+    as_of="2026-05-31T00:00:00Z",
+    trailing_days=30,
+)
+```
+
+A yielding preprocessor expands one raw observation into many processed
+observations. That is useful when one account history should become multiple
+windows, one session log should become multiple examples, or one raw export
+contains many model records:
+
+```{python .marimo}
+#| echo: true
+#| output: true
+
+@j2v.preprocess(yields=True)
+def session_windows(account: dict):
+    for session in account["sessions"]:
+        yield {
+            "account_id": account["account_id"],
+            "events": session["events"],
+            "label": session.get("label"),
+        }
+```
+
+The same callable can be passed directly to `model.encode(...)` or
+`model.predict(...)` for debugging:
+
+```{python .marimo}
+#| echo: true
+#| output: true
+
+encoded = model.encode(raw_records[:2], preprocess=normalize_transaction)
+predictions = model.predict(raw_records[:2], preprocess=normalize_transaction)
+```
 
 ## Schema Mutation
 
@@ -323,6 +390,7 @@ data module so it uses the intended schema and tensorfield encoding context.
 - Use [Training With Lightning](lightning.qmd) for the execution model.
 - Use [Batch Inference](batch-inference.qmd) for `trainer.predict(...)` and
   `j2v.Writer`.
-- Use preprocessors for input-side transformations.
+- Use this page's [preprocessor section](#preprocessors) for input-side
+  transformations.
 - Use [Query Paths](../core-concepts/querypaths.qmd) to map processed records to
   leaf fields.

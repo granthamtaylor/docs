@@ -1,0 +1,37 @@
+---
+marimo-static-output: true
+---
+
+# Mask { #json2vec.Mask }
+
+```python
+Mask(**data)
+```
+
+Structured masking policy attached to an `Array`.
+
+`Mask` selects candidate coordinates inside the owning array, samples from those
+coordinates with either `rate` or `count`, and applies the selection to active
+descendant leaves unless `exclude` removes them.
+
+See [Dynamic Masking](../core-concepts/dynamic-masking.qmd) for examples and
+coordinate rules.
+
+## Attributes
+
+| Name | Default | Description |
+| --- | --- | --- |
+| `name` | `None` | Optional name for the mask policy. Names must be unique within one array when provided. |
+| `rate` | `None` | Bernoulli probability for each candidate slot. Mutually exclusive with `count`. |
+| `count` | `None` | Exact number of candidate slots sampled per parent coordinate, capped by available candidates. Mutually exclusive with `rate`. |
+| `window` | `None` | Candidate span length. `None` means all slots in the selected coordinate space. |
+| `array` | `False` | Use fixed padded array coordinates instead of observed non-padded coordinates. |
+| `start` | `False` | Take the candidate window from the start instead of the end. |
+| `offset` | `0` | Skip slots away from the selected edge before taking the window. |
+| `exclude` | `None` | One predicate, or a list of predicates, for descendant leaves that should not receive this mask. |
+
+## Validation
+
+Exactly one of `rate` or `count` is required. `rate` must be between `0` and
+`1`; `count` must be non-negative; `window` must be positive when provided; and
+`offset` must be non-negative.

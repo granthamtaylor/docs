@@ -26,6 +26,7 @@ mutation predicates, and the `@preprocess` decorator.
 | --- | --- |
 | [Model](#json2vec.Model) | Neural model generated from a `json2vec` schema tree. |
 | [Array](#json2vec.Array) | Repeated nested object group in a `json2vec` schema. |
+| [Mask](#json2vec.Mask) | Structured masking policy attached to an `Array`. |
 | [Number](#json2vec.Number) | Numeric scalar tensorfield request. |
 | [Category](#json2vec.Category) | Categorical scalar tensorfield request backed by an online vocabulary. |
 | [Set](#json2vec.Set) | Multi-label set tensorfield request backed by an online vocabulary. |
@@ -351,7 +352,11 @@ Positional children are treated as fields inside the array.
 | [overflow](#json2vec.Array.overflow) |  |
 | [n_linear](#json2vec.Array.n_linear) |  |
 | [n_layers](#json2vec.Array.n_layers) |  |
+| [masks](#json2vec.Array.masks) | Array-level dynamic masking policies. |
 | [fields](#json2vec.Array.fields) |  |
+
+The constructor also accepts `mask=...` as shorthand for `masks=[...]`.
+See [Dynamic Masking](../core-concepts/dynamic-masking.qmd).
 
 #### Methods
 
@@ -373,6 +378,31 @@ model_post_init(__context)
 ```python
 check_unique_child_names()
 ```
+
+
+### Mask { #json2vec.Mask }
+
+```python
+Mask(**data)
+```
+
+Structured masking policy attached to an `Array`.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#json2vec.Mask.name) | Optional name for the mask policy. |
+| [rate](#json2vec.Mask.rate) | Bernoulli probability for each candidate slot. |
+| [count](#json2vec.Mask.count) | Exact number of slots sampled per parent coordinate. |
+| [window](#json2vec.Mask.window) | Candidate span length. |
+| [array](#json2vec.Mask.array) | Use fixed padded array coordinates instead of observed non-padded coordinates. |
+| [start](#json2vec.Mask.start) | Take the candidate window from the start instead of the end. |
+| [offset](#json2vec.Mask.offset) | Skip slots away from the selected edge before taking the window. |
+| [exclude](#json2vec.Mask.exclude) | Descendant leaves that should not receive this mask. |
+
+See [Dynamic Masking](../core-concepts/dynamic-masking.qmd) for examples and
+coordinate rules.
 
 
 

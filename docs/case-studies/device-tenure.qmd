@@ -262,5 +262,5 @@ sides of evaluation. Do not assume a learned embedding is a causal explanation.
   source and target accounts.
 - Use [Query Paths](../core-concepts/querypaths.qmd) to bind event histories to
   the schema.
-- Use preprocessors for time-windowing and
-  deriving `days_since_event`.
+- Use [preprocessors](../guides/data-modules.qmd#preprocessors) for
+  time-windowing and deriving `days_since_event`.

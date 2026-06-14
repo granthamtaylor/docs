@@ -22,6 +22,8 @@ input 100% of the time and decoded from the remaining context:
   the model to reconstruct them.
 - `p_prune` randomly removes whole leaf field instances during training and
   asks the model to reconstruct them.
+- array `mask=` / `masks=` hide repeated coordinates and project that selection
+  onto descendant leaves.
 - `embed=True` emits an embedding for that schema node during prediction. It
   does not make the field a target.
 
@@ -34,6 +36,10 @@ rates lower than `1.0`.
 Unsupervised embedding workflows are built from the same machinery: train on
 masked or pruned reconstruction objectives without an external label, then emit
 representations with `embed=True`.
+
+For recency windows or row-level masking inside arrays, use
+[Dynamic Masking](dynamic-masking.qmd). For independent leaf values, use
+`p_mask` or `p_prune`.
 
 ## Root Embeddings
 
@@ -290,6 +296,8 @@ anomaly detection, weak supervision, transfer learning, or diagnostics.
 
 - Use [Built-In Data Types](data-types.qmd) to choose leaf fields.
 - Use [Query Paths](querypaths.qmd) to bind source data to schema nodes.
+- Use [Dynamic Masking](dynamic-masking.qmd) for windowed reconstruction inside
+  repeated contexts.
 - Use [Batch Inference](../guides/batch-inference.qmd) to write embedding jobs to
   Parquet.
 - Use [Postprocessors](../guides/postprocessors.qmd) to reshape exported embeddings.

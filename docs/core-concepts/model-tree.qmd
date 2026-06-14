@@ -208,6 +208,7 @@ Schema roles change how nodes participate in training and prediction:
 | `p_mask=0.15` | Randomly hides individual leaf values for reconstruction. |
 | `p_prune=0.15` | Randomly hides whole leaf instances for reconstruction. |
 | `target=True` | Always hides a leaf from input and decodes it as a supervised target; shorthand for `p_prune=1.0`. |
+| `mask=j2v.Mask(...)` | Hides selected coordinates inside an `Array` and projects that selection onto descendant leaves. |
 | `embed=True` | Emits an embedding for root, branch, or leaf nodes during prediction. |
 | `active=False` | Keeps a leaf in the schema but removes it from encoding, forward passes, losses, and prediction until it is reactivated. |
 
@@ -235,3 +236,5 @@ used across schema mutation workflows.
 - Use [Array](../data-types/array.qmd) for repeated branch contexts.
 - Use [Learning Modes & Embeddings](embeddings.qmd) for `p_mask`,
   `p_prune`, and `embed=True` patterns.
+- Use [Dynamic Masking](dynamic-masking.qmd) for windowed reconstruction inside
+  repeated contexts.

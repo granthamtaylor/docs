@@ -92,12 +92,16 @@ Schema roles control what the model sees and what prediction can emit:
 | `target=True` | value is hidden | decoded supervised output |
 | `p_mask` | some observed values are hidden during training | decoded reconstruction for trainable values |
 | `p_prune` | whole field instances are hidden during training | decoded reconstruction for trainable values |
+| array `mask=` | repeated coordinates are hidden across descendant leaves | decoded reconstruction for affected trainable leaves |
 | `embed=True` | does not hide the value | embedding at that address |
 
 `target=True` is the always-pruned supervised case and is shorthand for
 `p_prune=1.0`. Use `p_mask` for stochastic value-level reconstruction with
 rates lower than `1.0`. Use `embed=True` when you want a representation returned
-from prediction; it does not make a field a target.
+from prediction; it does not make a field a target. Use
+[Dynamic Masking](core-concepts/dynamic-masking.qmd) when the masking rule is
+about positions inside a repeated context, such as recent events or selected
+line items.
 
 ## Train One Batch
 
@@ -182,10 +186,12 @@ tensors = model.encode(records.to_dicts()[:3])
 print(tensors)
 ```
 
-For messy data, use preprocessors when you need
-Python logic such as type coercion, windowing, sorting, or splitting one raw
-record into multiple observations. Use [custom queries](core-concepts/querypaths.qmd)
-when the source shape is stable and selection is enough.
+For messy data, use a preprocessor when you need Python logic such as type
+coercion, windowing, sorting, or splitting one raw record into multiple
+observations. Data modules pass preprocessors through the same training and
+prediction path; see [Data Modules](guides/data-modules.qmd#preprocessors).
+Use [custom queries](core-concepts/querypaths.qmd) when the source shape is
+stable and selection is enough.
 
 ## Add Nested Arrays
 
@@ -282,10 +288,12 @@ print(measurements["embedding"])
 - **Read schemas as model trees:** [Model Tree](core-concepts/model-tree.qmd)
 - **Map source records to schemas:** [Query Paths](core-concepts/querypaths.qmd)
 - **Choose field types:** [Built-In Data Types](core-concepts/data-types.qmd)
+- **Mask repeated windows:** [Dynamic Masking](core-concepts/dynamic-masking.qmd)
 - **Understand the trainer loop:** [Training With Lightning](guides/lightning.qmd)
 - **Choose input loaders:** [Data Modules](guides/data-modules.qmd)
 - **Run offline prediction:** [Batch Inference](guides/batch-inference.qmd)
 - **Train without labels:** [Learning Modes & Embeddings](core-concepts/embeddings.qmd)
 - **Export embeddings:** [Learning Modes & Embeddings](core-concepts/embeddings.qmd)
-- **Change schemas after construction:** schema mutation APIs
+- **Ablate input fields:** [Field Importance](guides/field-importance.qmd)
+- **Change schemas after construction:** [Model Tree](core-concepts/model-tree.qmd#roles-and-mutations)
 - **Apply the nested-data pattern:** [Device Tenure](case-studies/device-tenure.qmd)

@@ -108,10 +108,11 @@ These requirements map to the rest of the docs:
 | --- | --- |
 | Dynamic schema architecture | [Model Tree](core-concepts/model-tree.qmd) |
 | Hierarchical context encoding | [Model Tree](core-concepts/model-tree.qmd), [Array](data-types/array.qmd) |
-| Schema evolution | Schema mutation APIs |
+| Schema evolution | [Model Tree](core-concepts/model-tree.qmd#roles-and-mutations) |
 | Datatype plugins | [Built-In Data Types](core-concepts/data-types.qmd) |
-| Explainability | [Learning Modes & Embeddings](core-concepts/embeddings.qmd) |
-| Querying and wrangling | [Query Paths](core-concepts/querypaths.qmd), preprocessors |
+| Reconstruction and embeddings | [Learning Modes & Embeddings](core-concepts/embeddings.qmd), [Dynamic Masking](core-concepts/dynamic-masking.qmd) |
+| Diagnostics | [Field Importance](guides/field-importance.qmd) |
+| Querying and wrangling | [Query Paths](core-concepts/querypaths.qmd), [Data Modules](guides/data-modules.qmd#preprocessors) |
 
 ## Schema As Model Blueprint
 
@@ -162,7 +163,7 @@ This matters because a schema can evolve with the use case. A pretraining model,
 a fine-tuned model, an embedding model, and a serving deployment can be
 different configurations of the same underlying tree. See
 [Model Tree](core-concepts/model-tree.qmd) for the node structure and schema
-mutation APIs for the update workflow.
+mutation workflow.
 
 ## Hierarchical Contexts
 

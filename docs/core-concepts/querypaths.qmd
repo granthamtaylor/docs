@@ -310,7 +310,8 @@ Important rules:
 - Use JMESPath syntax, not JSONPath syntax. For example, use `[*].amount`, not
   `$.amount`.
 
-Use a preprocessor instead of a dense query when the source needs Python logic:
+Use a [preprocessor](../guides/data-modules.qmd#preprocessors) instead of a
+dense query when the source needs Python logic:
 
 | Need | Use |
 | --- | --- |
@@ -515,8 +516,9 @@ Both leaves use the same filter so `device_id` and `risk_score` remain aligned
 within `login_events`.
 
 ::: {.callout-note}
-You can filter nested arrays with a query path, but use a preprocessor when
-filtering depends on sorting, windowing, request time, or other business rules.
+You can filter nested arrays with a query path, but use a
+[preprocessor](../guides/data-modules.qmd#preprocessors) when filtering depends
+on sorting, windowing, request time, or other business rules.
 Sibling fields under the same `Array` should use the same filter so their values
 remain aligned.
 :::
@@ -566,9 +568,9 @@ The slice query preserves the root dimension and returns up to ten event amounts
 per processed record.
 
 ::: {.callout-note}
-You can slice nested arrays with a query path, but use a preprocessor when you
-need to sort first, choose a time window, or make the slicing rule testable
-outside JMESPath.
+You can slice nested arrays with a query path, but use a
+[preprocessor](../guides/data-modules.qmd#preprocessors) when you need to sort
+first, choose a time window, or make the slicing rule testable outside JMESPath.
 :::
 
 ## Common Query Examples

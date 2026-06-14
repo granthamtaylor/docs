@@ -240,7 +240,7 @@ would be easier to test and maintain.
 
 - Use [Query Paths](../core-concepts/querypaths.qmd) for request query conventions.
 - Use [Array](../data-types/array.qmd) for repeated context behavior.
-- Use preprocessors when role-aware stacking needs Python
-  logic.
+- Use [preprocessors](data-modules.qmd#preprocessors) when role-aware stacking
+  needs Python logic.
 - See the [Device Tenure case study](../case-studies/device-tenure.qmd) for a
   repeated-identity pattern in event histories.

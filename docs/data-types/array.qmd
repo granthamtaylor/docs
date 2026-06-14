@@ -166,6 +166,8 @@ Common array fields include:
 | `n_heads` | `4` | Attention heads for this array. Must be even. |
 | `n_linear` | `1` | Number of feed-forward linear layers in this array. |
 | `dropout` | `None` | Optional dropout rate. |
+| `mask` | `None` | One `j2v.Mask(...)` policy for selecting repeated coordinates during training. |
+| `masks` | `[]` | Multiple named or unnamed `j2v.Mask(...)` policies for the same array. |
 | `embed` | `False` | Includes this array node in `Model.predict(...)` outputs under `embedding`. See [Learning Modes & Embeddings](../core-concepts/embeddings.qmd). |
 | `description` | `None` | Optional schema metadata. |
 
@@ -204,6 +206,11 @@ information through the model.
 `p_mask`, `p_prune`, and `target=True` are configured on leaf tensorfields, not
 on `Array`. To apply the same masking or pruning rate to every child field, use
 `model.update(...)` with a selector that matches those leaves.
+
+Configure `mask=` or `masks=` on an array when the selection is about repeated
+coordinates rather than independent leaf values. Array masks are resolved after
+query extraction, overflow handling, and padding, then projected to active
+descendant leaves. See [Dynamic Masking](../core-concepts/dynamic-masking.qmd).
 
 Configure `embed=True` on an array when you want `Model.predict(...)` to return
 a representation for the grouped context under that array address. See

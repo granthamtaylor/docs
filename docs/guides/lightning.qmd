@@ -152,5 +152,6 @@ through Lightning and the data module options.
   `StreamingDataModule`.
 - Use [Batch Inference](batch-inference.qmd) to write predictions with
   `j2v.Writer`.
-- Use preprocessors for input-side Python logic.
+- Use [preprocessors](data-modules.qmd#preprocessors) for input-side Python
+  logic.
 - Use the [API Reference](../reference/api.qmd) for constructor details.

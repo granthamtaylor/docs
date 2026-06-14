@@ -145,10 +145,12 @@ without making a feature table the only representation the model can see.
 - Modeling rationale: [Why `json2vec`](docs/motivation.qmd)
 - Built-in fields: [Data Types](docs/core-concepts/data-types.qmd)
 - Learning modes and embeddings: [Learning Modes & Embeddings](docs/core-concepts/embeddings.qmd)
+- Windowed reconstruction in arrays: [Dynamic Masking](docs/core-concepts/dynamic-masking.qmd)
 - Training execution: [Training With Lightning](docs/guides/lightning.qmd)
 - In-memory and streaming inputs: [Data Modules](docs/guides/data-modules.qmd)
 - Offline prediction jobs: [Batch Inference](docs/guides/batch-inference.qmd)
 - Serving-time output shaping: [Postprocessors](docs/guides/postprocessors.qmd)
+- Input ablation diagnostics: [Field Importance](docs/guides/field-importance.qmd)
 - Applied risk example: [Device Tenure](docs/case-studies/device-tenure.qmd)
 
 ## Learning Path
@@ -159,6 +161,7 @@ For a first pass, follow this sequence:
 [Model Tree](docs/core-concepts/model-tree.qmd) ->
 [Query Paths](docs/core-concepts/querypaths.qmd) ->
 [Data Types](docs/core-concepts/data-types.qmd) ->
+[Dynamic Masking](docs/core-concepts/dynamic-masking.qmd) ->
 [Training With Lightning](docs/guides/lightning.qmd) ->
 [Data Modules](docs/guides/data-modules.qmd) ->
 [Batch Inference](docs/guides/batch-inference.qmd)

@@ -95,8 +95,9 @@ the model to always reconstruct a hidden value, but it is not the same API as
 validated to be lower than `1.0`.
 
 `p_mask`, `p_prune`, and `target` are leaf tensorfield options. `Array` nodes
-define repeated structure and can emit embeddings, but they do not directly
-mask, prune, or target values.
+define repeated structure and can emit embeddings. They can also own
+`j2v.Mask(...)` policies that select repeated coordinates and apply that
+selection to descendant leaves; see [Dynamic Masking](dynamic-masking.qmd).
 
 ### Outputs And Decoder Options
 

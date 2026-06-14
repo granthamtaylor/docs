@@ -29,6 +29,7 @@ quartodoc:
           members:
             - Model
             - Array
+            - Mask
             - Number
             - Category
             - Set
@@ -69,6 +70,7 @@ quartodoc:
     - title: Schema
       contents:
         - Array
+        - Mask
         - name: Hyperparameters
           members:
             - from_schema
@@ -141,6 +143,8 @@ website:
             text: Data Types
           - href: docs/core-concepts/embeddings.qmd
             text: Learning Modes & Embeddings
+          - href: docs/core-concepts/dynamic-masking.qmd
+            text: Dynamic Masking
       - text: Guides
         menu:
           - href: docs/guides/lightning.qmd
@@ -151,6 +155,8 @@ website:
             text: Batch Inference
           - href: docs/guides/postprocessors.qmd
             text: Postprocessors
+          - href: docs/guides/field-importance.qmd
+            text: Field Importance
       - text: Case Studies
         menu:
           - href: docs/case-studies/device-tenure.qmd
@@ -179,6 +185,8 @@ website:
             text: Data Types
           - href: docs/core-concepts/embeddings.qmd
             text: Learning Modes & Embeddings
+          - href: docs/core-concepts/dynamic-masking.qmd
+            text: Dynamic Masking
       - section: Data Types
         contents:
           - href: docs/data-types/array.qmd
@@ -209,6 +217,8 @@ website:
             text: Postprocessors
           - href: docs/guides/field-stacking.qmd
             text: Field Stacking
+          - href: docs/guides/field-importance.qmd
+            text: Field Importance
       - section: Case Studies
         contents:
           - href: docs/case-studies/device-tenure.qmd
