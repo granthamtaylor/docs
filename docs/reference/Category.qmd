@@ -1,0 +1,42 @@
+---
+marimo-static-output: true
+---
+
+# Category { #json2vec.Category }
+
+```python
+Category()
+```
+
+Categorical scalar tensorfield request backed by an online vocabulary.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Category.type) |  |
+| [max_vocab_size](#json2vec.Category.max_vocab_size) |  |
+| [p_unavailable](#json2vec.Category.p_unavailable) |  |
+| [topk](#json2vec.Category.topk) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [reject_removed_options](#json2vec.Category.reject_removed_options) |  |
+| [check_topk](#json2vec.Category.check_topk) |  |
+
+### reject_removed_options { #json2vec.Category.reject_removed_options }
+
+```python
+reject_removed_options(data)
+```
+
+
+
+### check_topk { #json2vec.Category.check_topk }
+
+```python
+check_topk()
+```
+

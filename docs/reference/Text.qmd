@@ -1,0 +1,55 @@
+---
+marimo-static-output: true
+---
+
+# Text { #json2vec.Text }
+
+```python
+Text()
+```
+
+Text tensorfield request encoded by a frozen Hugging Face model.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Text.type) |  |
+| [model_name](#json2vec.Text.model_name) |  |
+| [max_length](#json2vec.Text.max_length) |  |
+| [encoder_batch_size](#json2vec.Text.encoder_batch_size) |  |
+| [encoder_pooling](#json2vec.Text.encoder_pooling) |  |
+| [objective](#json2vec.Text.objective) |  |
+| [revision](#json2vec.Text.revision) |  |
+| [local_files_only](#json2vec.Text.local_files_only) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [normalize_model_name](#json2vec.Text.normalize_model_name) |  |
+| [normalize_revision](#json2vec.Text.normalize_revision) |  |
+| [check_model_name](#json2vec.Text.check_model_name) |  |
+
+### normalize_model_name { #json2vec.Text.normalize_model_name }
+
+```python
+normalize_model_name(value)
+```
+
+
+
+### normalize_revision { #json2vec.Text.normalize_revision }
+
+```python
+normalize_revision(value)
+```
+
+
+
+### check_model_name { #json2vec.Text.check_model_name }
+
+```python
+check_model_name()
+```
+

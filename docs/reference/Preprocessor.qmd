@@ -1,0 +1,29 @@
+---
+marimo-static-output: true
+---
+
+# Preprocessor { #json2vec.Preprocessor }
+
+```python
+Preprocessor()
+```
+
+Registered observation preprocessor.
+
+A transformation preprocessor returns one dict. A generator preprocessor
+yields or returns multiple dict objects, each of which becomes a processed
+observation.
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [outputs](#json2vec.Preprocessor.outputs) | Yield normalized processed observations for one raw observation. |
+
+### outputs { #json2vec.Preprocessor.outputs }
+
+```python
+outputs(observation, **kwargs)
+```
+
+Yield normalized processed observations for one raw observation.

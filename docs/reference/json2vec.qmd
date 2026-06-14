@@ -1,0 +1,1298 @@
+---
+marimo-static-output: true
+---
+
+# json2vec { #json2vec }
+
+`json2vec`
+
+Public `json2vec` SDK surface.
+
+The top-level package exports the constructors and helpers used by most
+applications: `Model.from_schema(...)` for model construction, tensorfield
+request constructors such as `Category` and `Number`, data modules, schema
+mutation predicates, and the `@preprocess` decorator.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [Postprocessor](#json2vec.Postprocessor) |  |
+| [RequestBase](#json2vec.RequestBase) |  |
+
+## Classes
+
+| Name | Description |
+| --- | --- |
+| [Model](#json2vec.Model) | Neural model generated from a `json2vec` schema tree. |
+| [Array](#json2vec.Array) | Repeated nested object group in a `json2vec` schema. |
+| [Number](#json2vec.Number) | Numeric scalar tensorfield request. |
+| [Category](#json2vec.Category) | Categorical scalar tensorfield request backed by an online vocabulary. |
+| [Set](#json2vec.Set) | Multi-label set tensorfield request backed by an online vocabulary. |
+| [DateParts](#json2vec.DateParts) | Date/time tensorfield request that extracts configured calendar parts. |
+| [Entity](#json2vec.Entity) | Per-observation entity tensorfield request for local identity matching. |
+| [Vector](#json2vec.Vector) | Fixed-width numeric vector tensorfield request. |
+| [Text](#json2vec.Text) | Text tensorfield request encoded by a frozen Hugging Face model. |
+| [CustomDataModule](#json2vec.CustomDataModule) | Lightning data module for user-provided iterable datasets. |
+| [PolarsDataModule](#json2vec.PolarsDataModule) | Lightning data module for in-memory Polars DataFrames. |
+| [StreamingDataModule](#json2vec.StreamingDataModule) | Lightning data module for streaming records from files. |
+| [Writer](#json2vec.Writer) |  |
+| [Overflow](#json2vec.Overflow) |  |
+| [TensorKey](#json2vec.TensorKey) |  |
+| [Address](#json2vec.Address) | Slash-delimited stable path to a schema node. |
+| [Hyperparameters](#json2vec.Hyperparameters) | Serializable schema and training metadata used to build a `Model`. |
+| [TensorFieldBase](#json2vec.TensorFieldBase) | Tensorized field values plus trainable target state. |
+| [EmbedderBase](#json2vec.EmbedderBase) | Base class for tensorfield embedders. |
+| [DecoderBase](#json2vec.DecoderBase) | Base class for tensorfield decoders. |
+| [Plugin](#json2vec.Plugin) | Registry object for a tensorfield implementation. |
+
+### Model { #json2vec.Model }
+
+```python
+Model(hyperparameters, *, batch_size=1, optimizer=None, scheduler=None)
+```
+
+Neural model generated from a `json2vec` schema tree.
+
+`Model` owns the schema hyperparameters, tensorfield embedders, array
+encoders, decoders, and convenience methods for prediction, checkpointing,
+schema display and mutation.
+
+#### Example {.doc-section .doc-section-example}
+
+```python
+import json2vec as j2v
+
+model = j2v.Model.from_schema(
+    j2v.Category("segment", max_vocab_size=32),
+    j2v.Category("label", target=True, max_vocab_size=4),
+    d_model=16,
+    n_layers=1,
+    n_heads=4,
+    batch_size=8,
+    embed=True,
+)
+```
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [hyperparameters](#json2vec.Model.hyperparameters) |  |
+| [batch_size](#json2vec.Model.batch_size) |  |
+| [optimizer](#json2vec.Model.optimizer) |  |
+| [scheduler](#json2vec.Model.scheduler) |  |
+| [locks](#json2vec.Model.locks) |  |
+| [nodes](#json2vec.Model.nodes) |  |
+| [schema](#json2vec.Model.schema) |  |
+| [interprocess_encoding_context](#json2vec.Model.interprocess_encoding_context) |  |
+| [from_checkpoint](#json2vec.Model.from_checkpoint) |  |
+| [training_step](#json2vec.Model.training_step) |  |
+| [validation_step](#json2vec.Model.validation_step) |  |
+| [test_step](#json2vec.Model.test_step) |  |
+| [predict_step](#json2vec.Model.predict_step) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [from_schema](#json2vec.Model.from_schema) | Build a model directly from schema fields. |
+| [select](#json2vec.Model.select) | Return schema nodes that satisfy every predicate. |
+| [update](#json2vec.Model.update) | Mutate selected schema nodes and rebuild compatible modules. |
+| [extend](#json2vec.Model.extend) | Append new schema fields under one selected array node and rebuild modules. |
+| [delete](#json2vec.Model.delete) | Permanently remove selected schema nodes and rebuild modules. |
+| [reset](#json2vec.Model.reset) | Reinitialize selected runtime node modules while preserving schema values. |
+| [override](#json2vec.Model.override) | Temporarily mutate selected schema nodes and keep runtime modules synchronized. |
+| [configure_callbacks](#json2vec.Model.configure_callbacks) |  |
+| [track](#json2vec.Model.track) |  |
+| [save](#json2vec.Model.save) | Save model weights and schema hyperparameters to a checkpoint. |
+| [forward](#json2vec.Model.forward) |  |
+| [configure_optimizers](#json2vec.Model.configure_optimizers) |  |
+| [on_save_checkpoint](#json2vec.Model.on_save_checkpoint) |  |
+| [restore_checkpoint_state](#json2vec.Model.restore_checkpoint_state) | Restore this model in place from a `json2vec` checkpoint dictionary. |
+| [load](#json2vec.Model.load) | Load a `Model` checkpoint written by `Model.save(...)`. |
+| [write](#json2vec.Model.write) |  |
+| [encode](#json2vec.Model.encode) | Return encoded tensorfield inputs for raw or processed observations. |
+| [predict](#json2vec.Model.predict) | Return typed predictions and configured embeddings for a raw or encoded batch. |
+
+##### from_schema { #json2vec.Model.from_schema }
+
+```python
+from_schema(
+    *field_args,
+    d_model,
+    n_layers,
+    n_heads,
+    batch_size=1,
+    fields=None,
+    name='record',
+    description=None,
+    embed=False,
+    attention=AttentionMode.mha,
+    n_linear=1,
+    dropout=None,
+    optimizer=None,
+    scheduler=None,
+)
+```
+
+Build a model directly from schema fields.
+
+###### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type                            | Description                                                                   | Default             |
+|-------------|---------------------------------|-------------------------------------------------------------------------------|---------------------|
+| *field_args | SchemaField                     | Field constructors such as `Category`, `Number`, or nested `Array` nodes.     | `()`                |
+| d_model     | int                             | Shared model width.                                                           | _required_          |
+| n_layers    | int                             | Number of encoder layers on generated array nodes.                            | _required_          |
+| n_heads     | int                             | Attention heads used by generated nodes.                                      | _required_          |
+| batch_size  | int                             | Batch size used by data modules, examples, and mocked Lightning input arrays. | `1`                 |
+| fields      | Sequence\[SchemaField\] \| None | Optional sequence form of `field_args`.                                       | `None`              |
+| name        | str                             | Root array name. Defaults to `record`.                                        | `'record'`          |
+| description | str \| None                     | Optional description on the generated root array.                             | `None`              |
+| embed       | bool                            | Configure the generated root array as an embedding output.                    | `False`             |
+| attention   | AttentionMode \| str            | Attention mode for the generated root array.                                  | `AttentionMode.mha` |
+| n_linear    | int                             | Feed-forward block count on the generated root array.                         | `1`                 |
+| dropout     | Rate \| None                    | Optional dropout rate on the generated root array.                            | `None`              |
+| optimizer   | OptimizerConfig \| None         | Optimizer instance or factory used by Lightning training.                     | `None`              |
+| scheduler   | SchedulerConfig \| None         | Optional scheduler config or factory.                                         | `None`              |
+
+###### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                           |
+|--------|--------|-------------------------------------------------------|
+|        | Self   | A compiled `Model` with modules built for the schema. |
+
+##### select { #json2vec.Model.select }
+
+```python
+select(*predicates, include_root=True, use_cache=True)
+```
+
+Return schema nodes that satisfy every predicate.
+
+##### update { #json2vec.Model.update }
+
+```python
+update(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+
+Mutate selected schema nodes and rebuild compatible modules.
+
+`target=True` is shorthand for `p_prune=1.0`; `target=False` clears
+target behavior by setting `p_prune=0.0`.
+
+###### Parameters {.doc-section .doc-section-parameters}
+
+| Name         | Type                                                         | Description                                                                                                                | Default   |
+|--------------|--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|-----------|
+| *predicates  | NodePredicate \| NodeAttribute \| Callable\[\[Node\], bool\] | Predicates used to select nodes.                                                                                           | `()`      |
+| strict       | bool                                                         | Raise when a selected node cannot accept one of `values`.                                                                  | `True`    |
+| allow_extra  | bool                                                         | Permit updates to extra metadata fields on models that allow unknown fields.                                               | `False`   |
+| include_root | bool                                                         | Include the root node in predicate matching.                                                                               | `True`    |
+| validate     | bool                                                         | Validate each node after applying candidate values.                                                                        | `True`    |
+| use_cache    | bool                                                         | Permit cached selector results. Mutations default this to `False` so updates always evaluate against current schema state. | `False`   |
+| **values     | Any                                                          | Schema attributes to update.                                                                                               | `{}`      |
+
+##### extend { #json2vec.Model.extend }
+
+```python
+extend(*args, include_root=True, use_cache=True)
+```
+
+Append new schema fields under one selected array node and rebuild modules.
+
+##### delete { #json2vec.Model.delete }
+
+```python
+delete(*predicates, include_root=False, use_cache=True)
+```
+
+Permanently remove selected schema nodes and rebuild modules.
+
+##### reset { #json2vec.Model.reset }
+
+```python
+reset(*predicates, include_root=True, use_cache=True, descendants=False)
+```
+
+Reinitialize selected runtime node modules while preserving schema values.
+
+##### override { #json2vec.Model.override }
+
+```python
+override(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+
+Temporarily mutate selected schema nodes and keep runtime modules synchronized.
+
+##### configure_callbacks { #json2vec.Model.configure_callbacks }
+
+```python
+configure_callbacks()
+```
+
+
+
+##### track { #json2vec.Model.track }
+
+```python
+track(names, /, value)
+```
+
+
+
+##### save { #json2vec.Model.save }
+
+```python
+save(pathname)
+```
+
+Save model weights and schema hyperparameters to a checkpoint.
+
+##### forward { #json2vec.Model.forward }
+
+```python
+forward(inputs, *, strata, dataloader_idx=0)
+```
+
+
+
+##### configure_optimizers { #json2vec.Model.configure_optimizers }
+
+```python
+configure_optimizers()
+```
+
+
+
+##### on_save_checkpoint { #json2vec.Model.on_save_checkpoint }
+
+```python
+on_save_checkpoint(checkpoint)
+```
+
+
+
+##### restore_checkpoint_state { #json2vec.Model.restore_checkpoint_state }
+
+```python
+restore_checkpoint_state(checkpoint)
+```
+
+Restore this model in place from a `json2vec` checkpoint dictionary.
+
+##### load { #json2vec.Model.load }
+
+```python
+load(checkpoint)
+```
+
+Load a `Model` checkpoint written by `Model.save(...)`.
+
+##### write { #json2vec.Model.write }
+
+```python
+write(predictions)
+```
+
+
+
+##### encode { #json2vec.Model.encode }
+
+```python
+encode(batch, preprocess=None, strata=Strata.predict)
+```
+
+Return encoded tensorfield inputs for raw or processed observations.
+
+##### predict { #json2vec.Model.predict }
+
+```python
+predict(batch, preprocess=None, postprocess=None)
+```
+
+Return typed predictions and configured embeddings for a raw or encoded batch.
+
+### Array { #json2vec.Array }
+
+```python
+Array(*children, **data)
+```
+
+Repeated nested object group in a `json2vec` schema.
+
+Positional children are treated as fields inside the array.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#json2vec.Array.name) |  |
+| [type](#json2vec.Array.type) |  |
+| [attention](#json2vec.Array.attention) |  |
+| [max_length](#json2vec.Array.max_length) |  |
+| [overflow](#json2vec.Array.overflow) |  |
+| [n_linear](#json2vec.Array.n_linear) |  |
+| [n_layers](#json2vec.Array.n_layers) |  |
+| [fields](#json2vec.Array.fields) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [model_post_init](#json2vec.Array.model_post_init) |  |
+| [check_unique_child_names](#json2vec.Array.check_unique_child_names) |  |
+
+##### model_post_init { #json2vec.Array.model_post_init }
+
+```python
+model_post_init(__context)
+```
+
+
+
+##### check_unique_child_names { #json2vec.Array.check_unique_child_names }
+
+```python
+check_unique_child_names()
+```
+
+
+
+### Number { #json2vec.Number }
+
+```python
+Number()
+```
+
+Numeric scalar tensorfield request.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Number.type) |  |
+| [jitter](#json2vec.Number.jitter) |  |
+| [n_bands](#json2vec.Number.n_bands) |  |
+| [offset](#json2vec.Number.offset) |  |
+| [alpha](#json2vec.Number.alpha) |  |
+| [objective](#json2vec.Number.objective) |  |
+
+### Category { #json2vec.Category }
+
+```python
+Category()
+```
+
+Categorical scalar tensorfield request backed by an online vocabulary.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Category.type) |  |
+| [max_vocab_size](#json2vec.Category.max_vocab_size) |  |
+| [p_unavailable](#json2vec.Category.p_unavailable) |  |
+| [topk](#json2vec.Category.topk) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [reject_removed_options](#json2vec.Category.reject_removed_options) |  |
+| [check_topk](#json2vec.Category.check_topk) |  |
+
+##### reject_removed_options { #json2vec.Category.reject_removed_options }
+
+```python
+reject_removed_options(data)
+```
+
+
+
+##### check_topk { #json2vec.Category.check_topk }
+
+```python
+check_topk()
+```
+
+
+
+### Set { #json2vec.Set }
+
+```python
+Set()
+```
+
+Multi-label set tensorfield request backed by an online vocabulary.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Set.type) |  |
+| [max_vocab_size](#json2vec.Set.max_vocab_size) |  |
+| [p_unavailable](#json2vec.Set.p_unavailable) |  |
+| [threshold](#json2vec.Set.threshold) |  |
+
+### DateParts { #json2vec.DateParts }
+
+```python
+DateParts()
+```
+
+Date/time tensorfield request that extracts configured calendar parts.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.DateParts.type) |  |
+| [dateparts](#json2vec.DateParts.dateparts) |  |
+| [pattern](#json2vec.DateParts.pattern) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [check_dateparts](#json2vec.DateParts.check_dateparts) |  |
+| [check_date_pattern](#json2vec.DateParts.check_date_pattern) |  |
+
+##### check_dateparts { #json2vec.DateParts.check_dateparts }
+
+```python
+check_dateparts(v)
+```
+
+
+
+##### check_date_pattern { #json2vec.DateParts.check_date_pattern }
+
+```python
+check_date_pattern(v)
+```
+
+
+
+### Entity { #json2vec.Entity }
+
+```python
+Entity()
+```
+
+Per-observation entity tensorfield request for local identity matching.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Entity.type) |  |
+| [topk](#json2vec.Entity.topk) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [check_topk](#json2vec.Entity.check_topk) |  |
+| [post_bind_validate](#json2vec.Entity.post_bind_validate) |  |
+
+##### check_topk { #json2vec.Entity.check_topk }
+
+```python
+check_topk()
+```
+
+
+
+##### post_bind_validate { #json2vec.Entity.post_bind_validate }
+
+```python
+post_bind_validate()
+```
+
+
+
+### Vector { #json2vec.Vector }
+
+```python
+Vector()
+```
+
+Fixed-width numeric vector tensorfield request.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Vector.type) |  |
+| [n_dim](#json2vec.Vector.n_dim) |  |
+| [objective](#json2vec.Vector.objective) |  |
+
+### Text { #json2vec.Text }
+
+```python
+Text()
+```
+
+Text tensorfield request encoded by a frozen Hugging Face model.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Text.type) |  |
+| [model_name](#json2vec.Text.model_name) |  |
+| [max_length](#json2vec.Text.max_length) |  |
+| [encoder_batch_size](#json2vec.Text.encoder_batch_size) |  |
+| [encoder_pooling](#json2vec.Text.encoder_pooling) |  |
+| [objective](#json2vec.Text.objective) |  |
+| [revision](#json2vec.Text.revision) |  |
+| [local_files_only](#json2vec.Text.local_files_only) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [normalize_model_name](#json2vec.Text.normalize_model_name) |  |
+| [normalize_revision](#json2vec.Text.normalize_revision) |  |
+| [check_model_name](#json2vec.Text.check_model_name) |  |
+
+##### normalize_model_name { #json2vec.Text.normalize_model_name }
+
+```python
+normalize_model_name(value)
+```
+
+
+
+##### normalize_revision { #json2vec.Text.normalize_revision }
+
+```python
+normalize_revision(value)
+```
+
+
+
+##### check_model_name { #json2vec.Text.check_model_name }
+
+```python
+check_model_name()
+```
+
+
+
+### CustomDataModule { #json2vec.CustomDataModule }
+
+```python
+CustomDataModule(
+    model,
+    train=None,
+    validate=None,
+    test=None,
+    predict=None,
+    preprocessor=None,
+    datasets=None,
+    num_workers=None,
+    persistent_workers=True,
+    pin_memory=True,
+    observation_buffer_size=1,
+    sample_rate=1.0,
+    **kwargs,
+)
+```
+
+Lightning data module for user-provided iterable datasets.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [datasets](#json2vec.CustomDataModule.datasets) |  |
+| [preprocessor](#json2vec.CustomDataModule.preprocessor) |  |
+| [preprocessor_kwargs](#json2vec.CustomDataModule.preprocessor_kwargs) |  |
+| [num_workers](#json2vec.CustomDataModule.num_workers) |  |
+| [persistent_workers](#json2vec.CustomDataModule.persistent_workers) |  |
+| [pin_memory](#json2vec.CustomDataModule.pin_memory) |  |
+| [observation_buffer_size](#json2vec.CustomDataModule.observation_buffer_size) |  |
+| [sample_rate](#json2vec.CustomDataModule.sample_rate) |  |
+| [hyperparameters](#json2vec.CustomDataModule.hyperparameters) |  |
+| [batch_size](#json2vec.CustomDataModule.batch_size) |  |
+| [interprocess_encoding_context](#json2vec.CustomDataModule.interprocess_encoding_context) |  |
+| [train_dataloader](#json2vec.CustomDataModule.train_dataloader) |  |
+| [val_dataloader](#json2vec.CustomDataModule.val_dataloader) |  |
+| [test_dataloader](#json2vec.CustomDataModule.test_dataloader) |  |
+| [predict_dataloader](#json2vec.CustomDataModule.predict_dataloader) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [dataloader](#json2vec.CustomDataModule.dataloader) |  |
+
+##### dataloader { #json2vec.CustomDataModule.dataloader }
+
+```python
+dataloader(strata, required=True)
+```
+
+
+
+### PolarsDataModule { #json2vec.PolarsDataModule }
+
+```python
+PolarsDataModule(
+    model,
+    train=None,
+    validate=None,
+    test=None,
+    predict=None,
+    preprocessor=None,
+    dataframe=None,
+    num_workers=None,
+    persistent_workers=True,
+    pin_memory=True,
+    sharding=ShardingStrategy.chunk,
+    chunk_batch_size=4096,
+    observation_buffer_size=1,
+    sample_rate=1.0,
+    replacement=False,
+    **kwargs,
+)
+```
+
+Lightning data module for in-memory Polars DataFrames.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [dataframes](#json2vec.PolarsDataModule.dataframes) |  |
+| [preprocessor](#json2vec.PolarsDataModule.preprocessor) |  |
+| [preprocessor_kwargs](#json2vec.PolarsDataModule.preprocessor_kwargs) |  |
+| [num_workers](#json2vec.PolarsDataModule.num_workers) |  |
+| [persistent_workers](#json2vec.PolarsDataModule.persistent_workers) |  |
+| [pin_memory](#json2vec.PolarsDataModule.pin_memory) |  |
+| [sharding](#json2vec.PolarsDataModule.sharding) |  |
+| [chunk_batch_size](#json2vec.PolarsDataModule.chunk_batch_size) |  |
+| [observation_buffer_size](#json2vec.PolarsDataModule.observation_buffer_size) |  |
+| [sample_rate](#json2vec.PolarsDataModule.sample_rate) |  |
+| [replacement](#json2vec.PolarsDataModule.replacement) |  |
+| [hyperparameters](#json2vec.PolarsDataModule.hyperparameters) |  |
+| [batch_size](#json2vec.PolarsDataModule.batch_size) |  |
+| [interprocess_encoding_context](#json2vec.PolarsDataModule.interprocess_encoding_context) |  |
+| [train_dataloader](#json2vec.PolarsDataModule.train_dataloader) |  |
+| [val_dataloader](#json2vec.PolarsDataModule.val_dataloader) |  |
+| [test_dataloader](#json2vec.PolarsDataModule.test_dataloader) |  |
+| [predict_dataloader](#json2vec.PolarsDataModule.predict_dataloader) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [dataloader](#json2vec.PolarsDataModule.dataloader) |  |
+
+##### dataloader { #json2vec.PolarsDataModule.dataloader }
+
+```python
+dataloader(strata, required=True)
+```
+
+
+
+### StreamingDataModule { #json2vec.StreamingDataModule }
+
+```python
+StreamingDataModule(
+    model,
+    root,
+    suffix,
+    train=None,
+    validate=None,
+    test=None,
+    predict=None,
+    preprocessor=None,
+    num_workers=None,
+    persistent_workers=True,
+    pin_memory=True,
+    sharding=ShardingStrategy.file,
+    chunk_batch_size=4096,
+    file_buffer_size=1,
+    observation_buffer_size=1,
+    sample_rate=1.0,
+    replacement=None,
+    **kwargs,
+)
+```
+
+Lightning data module for streaming records from files.
+
+Reads file-backed records, applies an optional preprocessor, batches
+observations, and encodes them with model hyperparameters.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [root](#json2vec.StreamingDataModule.root) |  |
+| [suffix](#json2vec.StreamingDataModule.suffix) |  |
+| [train](#json2vec.StreamingDataModule.train) |  |
+| [validate](#json2vec.StreamingDataModule.validate) |  |
+| [test](#json2vec.StreamingDataModule.test) |  |
+| [predict](#json2vec.StreamingDataModule.predict) |  |
+| [preprocessor](#json2vec.StreamingDataModule.preprocessor) |  |
+| [preprocessor_kwargs](#json2vec.StreamingDataModule.preprocessor_kwargs) |  |
+| [num_workers](#json2vec.StreamingDataModule.num_workers) |  |
+| [persistent_workers](#json2vec.StreamingDataModule.persistent_workers) |  |
+| [pin_memory](#json2vec.StreamingDataModule.pin_memory) |  |
+| [sharding](#json2vec.StreamingDataModule.sharding) |  |
+| [chunk_batch_size](#json2vec.StreamingDataModule.chunk_batch_size) |  |
+| [file_buffer_size](#json2vec.StreamingDataModule.file_buffer_size) |  |
+| [observation_buffer_size](#json2vec.StreamingDataModule.observation_buffer_size) |  |
+| [sample_rate](#json2vec.StreamingDataModule.sample_rate) |  |
+| [replacement](#json2vec.StreamingDataModule.replacement) |  |
+| [hyperparameters](#json2vec.StreamingDataModule.hyperparameters) |  |
+| [batch_size](#json2vec.StreamingDataModule.batch_size) |  |
+| [interprocess_encoding_context](#json2vec.StreamingDataModule.interprocess_encoding_context) |  |
+| [train_dataloader](#json2vec.StreamingDataModule.train_dataloader) |  |
+| [val_dataloader](#json2vec.StreamingDataModule.val_dataloader) |  |
+| [test_dataloader](#json2vec.StreamingDataModule.test_dataloader) |  |
+| [predict_dataloader](#json2vec.StreamingDataModule.predict_dataloader) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [dataloader](#json2vec.StreamingDataModule.dataloader) |  |
+
+##### dataloader { #json2vec.StreamingDataModule.dataloader }
+
+```python
+dataloader(strata, required=True)
+```
+
+
+
+### Writer { #json2vec.Writer }
+
+```python
+Writer(path, flush_every_n_batches=None, postprocessor=None)
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [path](#json2vec.Writer.path) |  |
+| [flush_every_n_batches](#json2vec.Writer.flush_every_n_batches) |  |
+| [postprocessor](#json2vec.Writer.postprocessor) |  |
+| [schema](#json2vec.Writer.schema) |  |
+| [writer](#json2vec.Writer.writer) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [write_on_batch_end](#json2vec.Writer.write_on_batch_end) |  |
+| [on_predict_end](#json2vec.Writer.on_predict_end) |  |
+
+##### write_on_batch_end { #json2vec.Writer.write_on_batch_end }
+
+```python
+write_on_batch_end(
+    trainer,
+    pl_module,
+    output,
+    batch_indices,
+    batch,
+    batch_idx,
+    dataloader_idx,
+)
+```
+
+
+
+##### on_predict_end { #json2vec.Writer.on_predict_end }
+
+```python
+on_predict_end(trainer, pl_module)
+```
+
+
+
+### Overflow { #json2vec.Overflow }
+
+```python
+Overflow()
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [head](#json2vec.Overflow.head) |  |
+| [tail](#json2vec.Overflow.tail) |  |
+| [error](#json2vec.Overflow.error) |  |
+
+### TensorKey { #json2vec.TensorKey }
+
+```python
+TensorKey()
+```
+
+
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [value](#json2vec.TensorKey.value) |  |
+| [content](#json2vec.TensorKey.content) |  |
+| [state](#json2vec.TensorKey.state) |  |
+| [trainable](#json2vec.TensorKey.trainable) |  |
+| [targets](#json2vec.TensorKey.targets) |  |
+| [metadata](#json2vec.TensorKey.metadata) |  |
+| [intervals](#json2vec.TensorKey.intervals) |  |
+| [probability](#json2vec.TensorKey.probability) |  |
+| [topk](#json2vec.TensorKey.topk) |  |
+| [embedding](#json2vec.TensorKey.embedding) |  |
+
+### Address { #json2vec.Address }
+
+```python
+Address()
+```
+
+Slash-delimited stable path to a schema node.
+
+### Hyperparameters { #json2vec.Hyperparameters }
+
+```python
+Hyperparameters()
+```
+
+Serializable schema and training metadata used to build a `Model`.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [model_config](#json2vec.Hyperparameters.model_config) |  |
+| [name](#json2vec.Hyperparameters.name) |  |
+| [type](#json2vec.Hyperparameters.type) |  |
+| [description](#json2vec.Hyperparameters.description) |  |
+| [d_model](#json2vec.Hyperparameters.d_model) |  |
+| [fields](#json2vec.Hyperparameters.fields) |  |
+| [embed](#json2vec.Hyperparameters.embed) |  |
+| [dropout](#json2vec.Hyperparameters.dropout) |  |
+| [target](#json2vec.Hyperparameters.target) |  |
+| [arrays](#json2vec.Hyperparameters.arrays) |  |
+| [requests](#json2vec.Hyperparameters.requests) |  |
+| [active_requests](#json2vec.Hyperparameters.active_requests) |  |
+| [shapes](#json2vec.Hyperparameters.shapes) |  |
+| [depthwise](#json2vec.Hyperparameters.depthwise) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [update_values](#json2vec.Hyperparameters.update_values) |  |
+| [jmespath_member](#json2vec.Hyperparameters.jmespath_member) |  |
+| [query_for_source](#json2vec.Hyperparameters.query_for_source) | Infer a request-level query for a leaf source field. |
+| [request_from_leaf](#json2vec.Hyperparameters.request_from_leaf) |  |
+| [from_schema_node](#json2vec.Hyperparameters.from_schema_node) |  |
+| [from_schema](#json2vec.Hyperparameters.from_schema) | Build hyperparameters from schema fields. |
+| [model_post_init](#json2vec.Hyperparameters.model_post_init) |  |
+| [overflows](#json2vec.Hyperparameters.overflows) |  |
+| [clear_selection_cache](#json2vec.Hyperparameters.clear_selection_cache) |  |
+| [refresh_selection_cache](#json2vec.Hyperparameters.refresh_selection_cache) |  |
+| [select](#json2vec.Hyperparameters.select) |  |
+| [update](#json2vec.Hyperparameters.update) | Mutate matching schema nodes. |
+| [extend](#json2vec.Hyperparameters.extend) | Append new schema fields under the single array selected by predicates. |
+| [delete](#json2vec.Hyperparameters.delete) | Permanently remove selected schema nodes from the tree. |
+| [override](#json2vec.Hyperparameters.override) |  |
+
+##### update_values { #json2vec.Hyperparameters.update_values }
+
+```python
+update_values(values)
+```
+
+
+
+##### jmespath_member { #json2vec.Hyperparameters.jmespath_member }
+
+```python
+jmespath_member(value)
+```
+
+
+
+##### query_for_source { #json2vec.Hyperparameters.query_for_source }
+
+```python
+query_for_source(array_path, source)
+```
+
+Infer a request-level query for a leaf source field.
+
+The encoder prepends the outer batch selector during search. Inferred
+queries therefore start at the processed-observation level: `[*].amount`,
+not `[*][*].amount`.
+
+##### request_from_leaf { #json2vec.Hyperparameters.request_from_leaf }
+
+```python
+request_from_leaf(leaf)
+```
+
+
+
+##### from_schema_node { #json2vec.Hyperparameters.from_schema_node }
+
+```python
+from_schema_node(node, *, array_path=())
+```
+
+
+
+##### from_schema { #json2vec.Hyperparameters.from_schema }
+
+```python
+from_schema(
+    *field_args,
+    d_model,
+    n_layers,
+    n_heads,
+    fields=None,
+    name='record',
+    description=None,
+    embed=False,
+    attention=AttentionMode.mha,
+    n_linear=1,
+    dropout=None,
+)
+```
+
+Build hyperparameters from schema fields.
+
+##### model_post_init { #json2vec.Hyperparameters.model_post_init }
+
+```python
+model_post_init(__context)
+```
+
+
+
+##### overflows { #json2vec.Hyperparameters.overflows }
+
+```python
+overflows(address)
+```
+
+
+
+##### clear_selection_cache { #json2vec.Hyperparameters.clear_selection_cache }
+
+```python
+clear_selection_cache()
+```
+
+
+
+##### refresh_selection_cache { #json2vec.Hyperparameters.refresh_selection_cache }
+
+```python
+refresh_selection_cache()
+```
+
+
+
+##### select { #json2vec.Hyperparameters.select }
+
+```python
+select(*predicates, include_root=True, use_cache=True)
+```
+
+
+
+##### update { #json2vec.Hyperparameters.update }
+
+```python
+update(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+
+Mutate matching schema nodes.
+
+`target=True` is normalized to `p_prune=1.0`; `target=False` clears the
+target prune rate by setting `p_prune=0.0`.
+
+##### extend { #json2vec.Hyperparameters.extend }
+
+```python
+extend(*args, include_root=True, use_cache=True)
+```
+
+Append new schema fields under the single array selected by predicates.
+
+##### delete { #json2vec.Hyperparameters.delete }
+
+```python
+delete(*predicates, include_root=False, use_cache=True)
+```
+
+Permanently remove selected schema nodes from the tree.
+
+##### override { #json2vec.Hyperparameters.override }
+
+```python
+override(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+
+
+
+### TensorFieldBase { #json2vec.TensorFieldBase }
+
+```python
+TensorFieldBase()
+```
+
+Tensorized field values plus trainable target state.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [content](#json2vec.TensorFieldBase.content) |  |
+| [state](#json2vec.TensorFieldBase.state) |  |
+| [trainable](#json2vec.TensorFieldBase.trainable) |  |
+| [targets](#json2vec.TensorFieldBase.targets) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [new](#json2vec.TensorFieldBase.new) |  |
+| [empty](#json2vec.TensorFieldBase.empty) |  |
+| [mask](#json2vec.TensorFieldBase.mask) |  |
+| [target](#json2vec.TensorFieldBase.target) |  |
+
+##### new { #json2vec.TensorFieldBase.new }
+
+```python
+new(values, address, hyperparameters, strata)
+```
+
+
+
+##### empty { #json2vec.TensorFieldBase.empty }
+
+```python
+empty(batch_size, address, hyperparameters)
+```
+
+
+
+##### mask { #json2vec.TensorFieldBase.mask }
+
+```python
+mask(p_mask)
+```
+
+
+
+##### target { #json2vec.TensorFieldBase.target }
+
+```python
+target(p_prune)
+```
+
+
+
+### EmbedderBase { #json2vec.EmbedderBase }
+
+```python
+EmbedderBase(hyperparameters, address)
+```
+
+Base class for tensorfield embedders.
+
+### DecoderBase { #json2vec.DecoderBase }
+
+```python
+DecoderBase(hyperparameters, address)
+```
+
+Base class for tensorfield decoders.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [address](#json2vec.DecoderBase.address) |  |
+| [sigma](#json2vec.DecoderBase.sigma) |  |
+| [pool](#json2vec.DecoderBase.pool) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [decode](#json2vec.DecoderBase.decode) |  |
+| [forward](#json2vec.DecoderBase.forward) |  |
+
+##### decode { #json2vec.DecoderBase.decode }
+
+```python
+decode(pooled)
+```
+
+
+
+##### forward { #json2vec.DecoderBase.forward }
+
+```python
+forward(parcels, *, embed=False)
+```
+
+
+
+### Plugin { #json2vec.Plugin }
+
+```python
+Plugin(name)
+```
+
+Registry object for a tensorfield implementation.
+
+Register request, tensorfield, embedder, decoder, loss, and write
+components with `@plugin.register`. Creating a plugin with an existing
+name replaces the registry entry and emits a warning.
+
+#### Attributes
+
+| Name | Description |
+| --- | --- |
+| [name](#json2vec.Plugin.name) |  |
+| [components](#json2vec.Plugin.components) |  |
+| [callback_factories](#json2vec.Plugin.callback_factories) |  |
+| [Request](#json2vec.Plugin.Request) |  |
+| [TensorField](#json2vec.Plugin.TensorField) |  |
+| [Embedder](#json2vec.Plugin.Embedder) |  |
+| [Decoder](#json2vec.Plugin.Decoder) |  |
+| [loss](#json2vec.Plugin.loss) |  |
+| [write](#json2vec.Plugin.write) |  |
+
+#### Methods
+
+| Name | Description |
+| --- | --- |
+| [register](#json2vec.Plugin.register) | Register one tensorfield component with this plugin. |
+| [callback](#json2vec.Plugin.callback) | Register a Lightning callback factory for this tensorfield. |
+| [callbacks](#json2vec.Plugin.callbacks) | Instantiate all registered callback factories. |
+
+##### register { #json2vec.Plugin.register }
+
+```python
+register(obj, component=None)
+```
+
+Register one tensorfield component with this plugin.
+
+##### callback { #json2vec.Plugin.callback }
+
+```python
+callback(factory)
+```
+
+Register a Lightning callback factory for this tensorfield.
+
+##### callbacks { #json2vec.Plugin.callbacks }
+
+```python
+callbacks()
+```
+
+Instantiate all registered callback factories.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [preprocess](#json2vec.preprocess) | Register a callable as a `json2vec` preprocessor. |
+| [where](#json2vec.where) | Start a schema predicate against a node attribute. |
+
+### preprocess { #json2vec.preprocess }
+
+```python
+preprocess(func=None, *, yields=None, **kwargs)
+```
+
+Register a callable as a `json2vec` preprocessor.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type                         | Description                                                 | Default   |
+|----------|------------------------------|-------------------------------------------------------------|-----------|
+| func     | Callable\[..., Any\] \| None | Callable to register when used as `@preprocess`.            | `None`    |
+| yields   | bool \| None                 | Set to `True` for generator preprocessors.                  | `None`    |
+| **kwargs | Any                          | Reserved for validation of unsupported decorator arguments. | `{}`      |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                 | Description                                                     |
+|--------|----------------------|-----------------------------------------------------------------|
+|        | Callable\[..., Any\] | The original callable, after registering it in `PREPROCESSORS`. |
+
+#### Example {.doc-section .doc-section-example}
+
+```python
+import json2vec as j2v
+
+@j2v.preprocess
+def normalize(record: dict) -> dict:
+    return {**record, "amount": float(record["amount"])}
+```
+
+### where { #json2vec.where }
+
+```python
+where(name)
+```
+
+Start a schema predicate against a node attribute.

@@ -1,0 +1,55 @@
+---
+marimo-static-output: true
+---
+
+# StreamingDataModule { #json2vec.StreamingDataModule }
+
+```python
+StreamingDataModule(
+    model,
+    root,
+    suffix,
+    train=None,
+    validate=None,
+    test=None,
+    predict=None,
+    preprocessor=None,
+    num_workers=None,
+    persistent_workers=True,
+    pin_memory=True,
+    sharding=ShardingStrategy.file,
+    chunk_batch_size=4096,
+    file_buffer_size=1,
+    observation_buffer_size=1,
+    sample_rate=1.0,
+    replacement=None,
+    **kwargs,
+)
+```
+
+Lightning data module for streaming records from files.
+
+Reads file-backed records, applies an optional preprocessor, batches
+observations, and encodes them with model hyperparameters.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [train_dataloader](#json2vec.StreamingDataModule.train_dataloader) |  |
+| [val_dataloader](#json2vec.StreamingDataModule.val_dataloader) |  |
+| [test_dataloader](#json2vec.StreamingDataModule.test_dataloader) |  |
+| [predict_dataloader](#json2vec.StreamingDataModule.predict_dataloader) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [dataloader](#json2vec.StreamingDataModule.dataloader) |  |
+
+### dataloader { #json2vec.StreamingDataModule.dataloader }
+
+```python
+dataloader(strata, required=True)
+```
+

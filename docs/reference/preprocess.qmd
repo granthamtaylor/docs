@@ -1,0 +1,35 @@
+---
+marimo-static-output: true
+---
+
+# preprocess { #json2vec.preprocess }
+
+```python
+preprocess(func=None, *, yields=None, **kwargs)
+```
+
+Register a callable as a `json2vec` preprocessor.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type                         | Description                                                 | Default   |
+|----------|------------------------------|-------------------------------------------------------------|-----------|
+| func     | Callable\[..., Any\] \| None | Callable to register when used as `@preprocess`.            | `None`    |
+| yields   | bool \| None                 | Set to `True` for generator preprocessors.                  | `None`    |
+| **kwargs | Any                          | Reserved for validation of unsupported decorator arguments. | `{}`      |
+
+## Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                 | Description                                                     |
+|--------|----------------------|-----------------------------------------------------------------|
+|        | Callable\[..., Any\] | The original callable, after registering it in `PREPROCESSORS`. |
+
+## Example {.doc-section .doc-section-example}
+
+```python
+import json2vec as j2v
+
+@j2v.preprocess
+def normalize(record: dict) -> dict:
+    return {**record, "amount": float(record["amount"])}
+```

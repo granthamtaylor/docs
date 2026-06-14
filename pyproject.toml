@@ -1,0 +1,14 @@
+[project]
+name = "json2vec"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    "marimo>=0.10.0",
+    "rich>=13.9.0",
+    "polars>=1.41.2",
+]
+
+[dependency-groups]
+dev = [
+    "quartodoc>=0.11.1",
+]

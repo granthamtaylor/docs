@@ -1,0 +1,47 @@
+---
+marimo-static-output: true
+---
+
+# CustomDataModule { #json2vec.CustomDataModule }
+
+```python
+CustomDataModule(
+    model,
+    train=None,
+    validate=None,
+    test=None,
+    predict=None,
+    preprocessor=None,
+    datasets=None,
+    num_workers=None,
+    persistent_workers=True,
+    pin_memory=True,
+    observation_buffer_size=1,
+    sample_rate=1.0,
+    **kwargs,
+)
+```
+
+Lightning data module for user-provided iterable datasets.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [train_dataloader](#json2vec.CustomDataModule.train_dataloader) |  |
+| [val_dataloader](#json2vec.CustomDataModule.val_dataloader) |  |
+| [test_dataloader](#json2vec.CustomDataModule.test_dataloader) |  |
+| [predict_dataloader](#json2vec.CustomDataModule.predict_dataloader) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [dataloader](#json2vec.CustomDataModule.dataloader) |  |
+
+### dataloader { #json2vec.CustomDataModule.dataloader }
+
+```python
+dataloader(strata, required=True)
+```
+

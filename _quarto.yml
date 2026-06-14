@@ -1,0 +1,235 @@
+project:
+  type: website
+  output-dir: site
+  render:
+    - index.qmd
+    - docs/**/*.qmd
+
+quartodoc:
+  package: json2vec
+  source_dir: /Users/grantham/Desktop/json2vec-oss/src
+  style: pkgdown
+  dir: docs/reference
+  out_index: api.qmd
+  title: "API Reference"
+  parser: google
+  css: docs/assets/stylesheets/quartodoc.css
+  options:
+    signature_name: short
+    include_empty: true
+    member_order: source
+  sections:
+    - title: Package
+      desc: Public constructors, helpers, enums, callbacks, and extension base classes exported by `json2vec`.
+      package:
+      contents:
+        - name: json2vec
+          children: embedded
+          include_imports: true
+          members:
+            - Model
+            - Array
+            - Number
+            - Category
+            - Set
+            - DateParts
+            - Entity
+            - Vector
+            - Text
+            - CustomDataModule
+            - PolarsDataModule
+            - StreamingDataModule
+            - Writer
+            - Postprocessor
+            - preprocess
+            - where
+            - Overflow
+            - TensorKey
+            - Address
+            - Hyperparameters
+            - TensorFieldBase
+            - RequestBase
+            - EmbedderBase
+            - DecoderBase
+            - Plugin
+    - title: Model
+      contents:
+        - name: Model
+          members:
+            - from_schema
+            - select
+            - update
+            - extend
+            - delete
+            - reset
+            - override
+            - save
+            - load
+            - predict
+    - title: Schema
+      contents:
+        - Array
+        - name: Hyperparameters
+          members:
+            - from_schema
+            - target
+            - embed
+            - select
+            - update
+            - extend
+            - delete
+            - override
+        - where
+    - title: Tensorfield Constructors
+      contents:
+        - Number
+        - Category
+        - Set
+        - DateParts
+        - Entity
+        - Vector
+        - Text
+    - title: Data
+      contents:
+        - name: CustomDataModule
+          members:
+            - dataloader
+            - train_dataloader
+            - val_dataloader
+            - test_dataloader
+            - predict_dataloader
+        - name: PolarsDataModule
+          members:
+            - dataloader
+            - train_dataloader
+            - val_dataloader
+            - test_dataloader
+            - predict_dataloader
+        - name: StreamingDataModule
+          members:
+            - dataloader
+            - train_dataloader
+            - val_dataloader
+            - test_dataloader
+            - predict_dataloader
+    - title: Batch Inference
+      contents:
+        - Writer
+        - Postprocessor
+    - title: Preprocessing
+      contents:
+        - preprocess
+        - name: Preprocessor
+          members:
+            - outputs
+
+website:
+  title: "json2vec"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: docs/getting-started.qmd
+        text: Getting Started
+      - text: Core Concepts
+        menu:
+          - href: docs/core-concepts/model-tree.qmd
+            text: Model Tree
+          - href: docs/core-concepts/querypaths.qmd
+            text: Query Paths
+          - href: docs/core-concepts/data-types.qmd
+            text: Data Types
+          - href: docs/core-concepts/embeddings.qmd
+            text: Learning Modes & Embeddings
+      - text: Guides
+        menu:
+          - href: docs/guides/lightning.qmd
+            text: Training With Lightning
+          - href: docs/guides/data-modules.qmd
+            text: Data Modules
+          - href: docs/guides/batch-inference.qmd
+            text: Batch Inference
+          - href: docs/guides/postprocessors.qmd
+            text: Postprocessors
+      - text: Case Studies
+        menu:
+          - href: docs/case-studies/device-tenure.qmd
+            text: Device Tenure
+      - href: docs/reference/api.qmd
+        text: API
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - href: index.qmd
+        text: Home
+      - href: docs/getting-started.qmd
+        text: Getting Started
+      - href: docs/motivation.qmd
+        text: Motivation
+      - href: docs/ai-quickstart.qmd
+        text: AI / Expert Quickstart
+      - section: Core Concepts
+        contents:
+          - href: docs/core-concepts/model-tree.qmd
+            text: Model Tree
+          - href: docs/core-concepts/querypaths.qmd
+            text: Query Paths
+          - href: docs/core-concepts/data-types.qmd
+            text: Data Types
+          - href: docs/core-concepts/embeddings.qmd
+            text: Learning Modes & Embeddings
+      - section: Data Types
+        contents:
+          - href: docs/data-types/array.qmd
+            text: Array
+          - href: docs/data-types/number.qmd
+            text: Number
+          - href: docs/data-types/category.qmd
+            text: Category
+          - href: docs/data-types/set.qmd
+            text: Set
+          - href: docs/data-types/entity.qmd
+            text: Entity
+          - href: docs/data-types/dateparts.qmd
+            text: DateParts
+          - href: docs/data-types/vector.qmd
+            text: Vector
+          - href: docs/data-types/text.qmd
+            text: Text
+      - section: Guides
+        contents:
+          - href: docs/guides/lightning.qmd
+            text: Training With Lightning
+          - href: docs/guides/data-modules.qmd
+            text: Data Modules
+          - href: docs/guides/batch-inference.qmd
+            text: Batch Inference
+          - href: docs/guides/postprocessors.qmd
+            text: Postprocessors
+          - href: docs/guides/field-stacking.qmd
+            text: Field Stacking
+      - section: Case Studies
+        contents:
+          - href: docs/case-studies/device-tenure.qmd
+            text: Device Tenure
+      - href: docs/reference/api.qmd
+        text: API Reference
+  search: true
+
+format:
+  html:
+    theme:
+      light:
+        - flatly
+        - docs/assets/stylesheets/theme-light.scss
+      dark:
+        - darkly
+        - docs/assets/stylesheets/theme-dark.scss
+    toc: true
+    code-copy: true
+    code-overflow: scroll
+    respect-user-color-scheme: true
+    css:
+      - docs/assets/stylesheets/quartodoc.css
+      - docs/assets/stylesheets/quarto-marimo.css

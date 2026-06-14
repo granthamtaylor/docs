@@ -1,0 +1,61 @@
+---
+marimo-static-output: true
+---
+
+# API Reference {.doc .doc-index}
+
+## Package
+
+Public constructors, helpers, enums, callbacks, and extension base classes exported by `json2vec`.
+
+| | |
+| --- | --- |
+| [json2vec](json2vec.qmd#json2vec) | Public `json2vec` SDK surface. |
+
+## Model
+
+| | |
+| --- | --- |
+| [Model](Model.qmd#json2vec.Model) | Neural model generated from a `json2vec` schema tree. |
+
+## Schema
+
+| | |
+| --- | --- |
+| [Array](Array.qmd#json2vec.Array) | Repeated nested object group in a `json2vec` schema. |
+| [Hyperparameters](Hyperparameters.qmd#json2vec.Hyperparameters) | Serializable schema and training metadata used to build a `Model`. |
+| [where](where.qmd#json2vec.where) | Start a schema predicate against a node attribute. |
+
+## Tensorfield Constructors
+
+| | |
+| --- | --- |
+| [Number](Number.qmd#json2vec.Number) | Numeric scalar tensorfield request. |
+| [Category](Category.qmd#json2vec.Category) | Categorical scalar tensorfield request backed by an online vocabulary. |
+| [Set](Set.qmd#json2vec.Set) | Multi-label set tensorfield request backed by an online vocabulary. |
+| [DateParts](DateParts.qmd#json2vec.DateParts) | Date/time tensorfield request that extracts configured calendar parts. |
+| [Entity](Entity.qmd#json2vec.Entity) | Per-observation entity tensorfield request for local identity matching. |
+| [Vector](Vector.qmd#json2vec.Vector) | Fixed-width numeric vector tensorfield request. |
+| [Text](Text.qmd#json2vec.Text) | Text tensorfield request encoded by a frozen Hugging Face model. |
+
+## Data
+
+| | |
+| --- | --- |
+| [CustomDataModule](CustomDataModule.qmd#json2vec.CustomDataModule) | Lightning data module for user-provided iterable datasets. |
+| [PolarsDataModule](PolarsDataModule.qmd#json2vec.PolarsDataModule) | Lightning data module for in-memory Polars DataFrames. |
+| [StreamingDataModule](StreamingDataModule.qmd#json2vec.StreamingDataModule) | Lightning data module for streaming records from files. |
+
+## Batch Inference
+
+| | |
+| --- | --- |
+| [Writer](Writer.qmd#json2vec.Writer) |  |
+| [Postprocessor](Postprocessor.qmd#json2vec.Postprocessor) |  |
+
+## Preprocessing
+
+| | |
+| --- | --- |
+| [preprocess](preprocess.qmd#json2vec.preprocess) | Register a callable as a `json2vec` preprocessor. |
+| [Preprocessor](Preprocessor.qmd#json2vec.Preprocessor) | Registered observation preprocessor. |

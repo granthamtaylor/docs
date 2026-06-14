@@ -1,0 +1,20 @@
+---
+marimo-static-output: true
+---
+
+# Set { #json2vec.Set }
+
+```python
+Set()
+```
+
+Multi-label set tensorfield request backed by an online vocabulary.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Set.type) |  |
+| [max_vocab_size](#json2vec.Set.max_vocab_size) |  |
+| [p_unavailable](#json2vec.Set.p_unavailable) |  |
+| [threshold](#json2vec.Set.threshold) |  |

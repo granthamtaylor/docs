@@ -1,0 +1,8 @@
+---
+marimo-static-output: true
+---
+
+# Postprocessor { #json2vec.Postprocessor }
+
+`Postprocessor`
+

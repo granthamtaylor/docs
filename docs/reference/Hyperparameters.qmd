@@ -1,0 +1,107 @@
+---
+marimo-static-output: true
+---
+
+# Hyperparameters { #json2vec.Hyperparameters }
+
+```python
+Hyperparameters()
+```
+
+Serializable schema and training metadata used to build a `Model`.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [target](#json2vec.Hyperparameters.target) |  |
+| [embed](#json2vec.Hyperparameters.embed) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [from_schema](#json2vec.Hyperparameters.from_schema) | Build hyperparameters from schema fields. |
+| [select](#json2vec.Hyperparameters.select) |  |
+| [update](#json2vec.Hyperparameters.update) | Mutate matching schema nodes. |
+| [extend](#json2vec.Hyperparameters.extend) | Append new schema fields under the single array selected by predicates. |
+| [delete](#json2vec.Hyperparameters.delete) | Permanently remove selected schema nodes from the tree. |
+| [override](#json2vec.Hyperparameters.override) |  |
+
+### from_schema { #json2vec.Hyperparameters.from_schema }
+
+```python
+from_schema(
+    *field_args,
+    d_model,
+    n_layers,
+    n_heads,
+    fields=None,
+    name='record',
+    description=None,
+    embed=False,
+    attention=AttentionMode.mha,
+    n_linear=1,
+    dropout=None,
+)
+```
+
+Build hyperparameters from schema fields.
+
+### select { #json2vec.Hyperparameters.select }
+
+```python
+select(*predicates, include_root=True, use_cache=True)
+```
+
+
+
+### update { #json2vec.Hyperparameters.update }
+
+```python
+update(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+
+Mutate matching schema nodes.
+
+`target=True` is normalized to `p_prune=1.0`; `target=False` clears the
+target prune rate by setting `p_prune=0.0`.
+
+### extend { #json2vec.Hyperparameters.extend }
+
+```python
+extend(*args, include_root=True, use_cache=True)
+```
+
+Append new schema fields under the single array selected by predicates.
+
+### delete { #json2vec.Hyperparameters.delete }
+
+```python
+delete(*predicates, include_root=False, use_cache=True)
+```
+
+Permanently remove selected schema nodes from the tree.
+
+### override { #json2vec.Hyperparameters.override }
+
+```python
+override(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+

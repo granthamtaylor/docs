@@ -1,0 +1,50 @@
+---
+marimo-static-output: true
+---
+
+# PolarsDataModule { #json2vec.PolarsDataModule }
+
+```python
+PolarsDataModule(
+    model,
+    train=None,
+    validate=None,
+    test=None,
+    predict=None,
+    preprocessor=None,
+    dataframe=None,
+    num_workers=None,
+    persistent_workers=True,
+    pin_memory=True,
+    sharding=ShardingStrategy.chunk,
+    chunk_batch_size=4096,
+    observation_buffer_size=1,
+    sample_rate=1.0,
+    replacement=False,
+    **kwargs,
+)
+```
+
+Lightning data module for in-memory Polars DataFrames.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [train_dataloader](#json2vec.PolarsDataModule.train_dataloader) |  |
+| [val_dataloader](#json2vec.PolarsDataModule.val_dataloader) |  |
+| [test_dataloader](#json2vec.PolarsDataModule.test_dataloader) |  |
+| [predict_dataloader](#json2vec.PolarsDataModule.predict_dataloader) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [dataloader](#json2vec.PolarsDataModule.dataloader) |  |
+
+### dataloader { #json2vec.PolarsDataModule.dataloader }
+
+```python
+dataloader(strata, required=True)
+```
+

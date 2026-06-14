@@ -1,0 +1,51 @@
+---
+marimo-static-output: true
+---
+
+# Writer { #json2vec.Writer }
+
+```python
+Writer(path, flush_every_n_batches=None, postprocessor=None)
+```
+
+
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [path](#json2vec.Writer.path) |  |
+| [flush_every_n_batches](#json2vec.Writer.flush_every_n_batches) |  |
+| [postprocessor](#json2vec.Writer.postprocessor) |  |
+| [schema](#json2vec.Writer.schema) |  |
+| [writer](#json2vec.Writer.writer) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [write_on_batch_end](#json2vec.Writer.write_on_batch_end) |  |
+| [on_predict_end](#json2vec.Writer.on_predict_end) |  |
+
+### write_on_batch_end { #json2vec.Writer.write_on_batch_end }
+
+```python
+write_on_batch_end(
+    trainer,
+    pl_module,
+    output,
+    batch_indices,
+    batch,
+    batch_idx,
+    dataloader_idx,
+)
+```
+
+
+
+### on_predict_end { #json2vec.Writer.on_predict_end }
+
+```python
+on_predict_end(trainer, pl_module)
+```
+

@@ -1,0 +1,22 @@
+---
+marimo-static-output: true
+---
+
+# Number { #json2vec.Number }
+
+```python
+Number()
+```
+
+Numeric scalar tensorfield request.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Number.type) |  |
+| [jitter](#json2vec.Number.jitter) |  |
+| [n_bands](#json2vec.Number.n_bands) |  |
+| [offset](#json2vec.Number.offset) |  |
+| [alpha](#json2vec.Number.alpha) |  |
+| [objective](#json2vec.Number.objective) |  |

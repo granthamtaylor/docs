@@ -1,0 +1,197 @@
+---
+marimo-static-output: true
+---
+
+# Model { #json2vec.Model }
+
+```python
+Model(hyperparameters, *, batch_size=1, optimizer=None, scheduler=None)
+```
+
+Neural model generated from a `json2vec` schema tree.
+
+`Model` owns the schema hyperparameters, tensorfield embedders, array
+encoders, decoders, and convenience methods for prediction, checkpointing,
+schema display and mutation.
+
+## Example {.doc-section .doc-section-example}
+
+```python
+import json2vec as j2v
+
+model = j2v.Model.from_schema(
+    j2v.Category("segment", max_vocab_size=32),
+    j2v.Category("label", target=True, max_vocab_size=4),
+    d_model=16,
+    n_layers=1,
+    n_heads=4,
+    batch_size=8,
+    embed=True,
+)
+```
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [from_schema](#json2vec.Model.from_schema) | Build a model directly from schema fields. |
+| [select](#json2vec.Model.select) | Return schema nodes that satisfy every predicate. |
+| [update](#json2vec.Model.update) | Mutate selected schema nodes and rebuild compatible modules. |
+| [extend](#json2vec.Model.extend) | Append new schema fields under one selected array node and rebuild modules. |
+| [delete](#json2vec.Model.delete) | Permanently remove selected schema nodes and rebuild modules. |
+| [reset](#json2vec.Model.reset) | Reinitialize selected runtime node modules while preserving schema values. |
+| [override](#json2vec.Model.override) | Temporarily mutate selected schema nodes and keep runtime modules synchronized. |
+| [save](#json2vec.Model.save) | Save model weights and schema hyperparameters to a checkpoint. |
+| [load](#json2vec.Model.load) | Load a `Model` checkpoint written by `Model.save(...)`. |
+| [predict](#json2vec.Model.predict) | Return typed predictions and configured embeddings for a raw or encoded batch. |
+
+### from_schema { #json2vec.Model.from_schema }
+
+```python
+from_schema(
+    *field_args,
+    d_model,
+    n_layers,
+    n_heads,
+    batch_size=1,
+    fields=None,
+    name='record',
+    description=None,
+    embed=False,
+    attention=AttentionMode.mha,
+    n_linear=1,
+    dropout=None,
+    optimizer=None,
+    scheduler=None,
+)
+```
+
+Build a model directly from schema fields.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type                            | Description                                                                   | Default             |
+|-------------|---------------------------------|-------------------------------------------------------------------------------|---------------------|
+| *field_args | SchemaField                     | Field constructors such as `Category`, `Number`, or nested `Array` nodes.     | `()`                |
+| d_model     | int                             | Shared model width.                                                           | _required_          |
+| n_layers    | int                             | Number of encoder layers on generated array nodes.                            | _required_          |
+| n_heads     | int                             | Attention heads used by generated nodes.                                      | _required_          |
+| batch_size  | int                             | Batch size used by data modules, examples, and mocked Lightning input arrays. | `1`                 |
+| fields      | Sequence\[SchemaField\] \| None | Optional sequence form of `field_args`.                                       | `None`              |
+| name        | str                             | Root array name. Defaults to `record`.                                        | `'record'`          |
+| description | str \| None                     | Optional description on the generated root array.                             | `None`              |
+| embed       | bool                            | Configure the generated root array as an embedding output.                    | `False`             |
+| attention   | AttentionMode \| str            | Attention mode for the generated root array.                                  | `AttentionMode.mha` |
+| n_linear    | int                             | Feed-forward block count on the generated root array.                         | `1`                 |
+| dropout     | Rate \| None                    | Optional dropout rate on the generated root array.                            | `None`              |
+| optimizer   | OptimizerConfig \| None         | Optimizer instance or factory used by Lightning training.                     | `None`              |
+| scheduler   | SchedulerConfig \| None         | Optional scheduler config or factory.                                         | `None`              |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                           |
+|--------|--------|-------------------------------------------------------|
+|        | Self   | A compiled `Model` with modules built for the schema. |
+
+### select { #json2vec.Model.select }
+
+```python
+select(*predicates, include_root=True, use_cache=True)
+```
+
+Return schema nodes that satisfy every predicate.
+
+### update { #json2vec.Model.update }
+
+```python
+update(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+
+Mutate selected schema nodes and rebuild compatible modules.
+
+`target=True` is shorthand for `p_prune=1.0`; `target=False` clears
+target behavior by setting `p_prune=0.0`.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name         | Type                                                         | Description                                                                                                                | Default   |
+|--------------|--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|-----------|
+| *predicates  | NodePredicate \| NodeAttribute \| Callable\[\[Node\], bool\] | Predicates used to select nodes.                                                                                           | `()`      |
+| strict       | bool                                                         | Raise when a selected node cannot accept one of `values`.                                                                  | `True`    |
+| allow_extra  | bool                                                         | Permit updates to extra metadata fields on models that allow unknown fields.                                               | `False`   |
+| include_root | bool                                                         | Include the root node in predicate matching.                                                                               | `True`    |
+| validate     | bool                                                         | Validate each node after applying candidate values.                                                                        | `True`    |
+| use_cache    | bool                                                         | Permit cached selector results. Mutations default this to `False` so updates always evaluate against current schema state. | `False`   |
+| **values     | Any                                                          | Schema attributes to update.                                                                                               | `{}`      |
+
+### extend { #json2vec.Model.extend }
+
+```python
+extend(*args, include_root=True, use_cache=True)
+```
+
+Append new schema fields under one selected array node and rebuild modules.
+
+### delete { #json2vec.Model.delete }
+
+```python
+delete(*predicates, include_root=False, use_cache=True)
+```
+
+Permanently remove selected schema nodes and rebuild modules.
+
+### reset { #json2vec.Model.reset }
+
+```python
+reset(*predicates, include_root=True, use_cache=True, descendants=False)
+```
+
+Reinitialize selected runtime node modules while preserving schema values.
+
+### override { #json2vec.Model.override }
+
+```python
+override(
+    *predicates,
+    strict=True,
+    allow_extra=False,
+    include_root=True,
+    validate=True,
+    use_cache=False,
+    **values,
+)
+```
+
+Temporarily mutate selected schema nodes and keep runtime modules synchronized.
+
+### save { #json2vec.Model.save }
+
+```python
+save(pathname)
+```
+
+Save model weights and schema hyperparameters to a checkpoint.
+
+### load { #json2vec.Model.load }
+
+```python
+load(checkpoint)
+```
+
+Load a `Model` checkpoint written by `Model.save(...)`.
+
+### predict { #json2vec.Model.predict }
+
+```python
+predict(batch, preprocess=None, postprocess=None)
+```
+
+Return typed predictions and configured embeddings for a raw or encoded batch.

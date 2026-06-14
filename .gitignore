@@ -1,0 +1,49 @@
+# Quarto build state and rendered output
+/.quarto/
+/site/
+/_site/
+**/*.quarto_ipynb
+**/*_files/
+**/*_cache/
+
+# Jupyter and notebook scratch files
+.ipynb_checkpoints/
+.jupyter_cache/
+
+# Python environments, bytecode, and local tooling caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# OS and editor metadata
+.DS_Store
+._*
+.idea/
+.vscode/

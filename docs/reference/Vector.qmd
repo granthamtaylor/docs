@@ -1,0 +1,19 @@
+---
+marimo-static-output: true
+---
+
+# Vector { #json2vec.Vector }
+
+```python
+Vector()
+```
+
+Fixed-width numeric vector tensorfield request.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Vector.type) |  |
+| [n_dim](#json2vec.Vector.n_dim) |  |
+| [objective](#json2vec.Vector.objective) |  |

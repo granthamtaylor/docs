@@ -1,0 +1,11 @@
+---
+marimo-static-output: true
+---
+
+# where { #json2vec.where }
+
+```python
+where(name)
+```
+
+Start a schema predicate against a node attribute.

@@ -1,0 +1,41 @@
+---
+marimo-static-output: true
+---
+
+# DateParts { #json2vec.DateParts }
+
+```python
+DateParts()
+```
+
+Date/time tensorfield request that extracts configured calendar parts.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.DateParts.type) |  |
+| [dateparts](#json2vec.DateParts.dateparts) |  |
+| [pattern](#json2vec.DateParts.pattern) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [check_dateparts](#json2vec.DateParts.check_dateparts) |  |
+| [check_date_pattern](#json2vec.DateParts.check_date_pattern) |  |
+
+### check_dateparts { #json2vec.DateParts.check_dateparts }
+
+```python
+check_dateparts(v)
+```
+
+
+
+### check_date_pattern { #json2vec.DateParts.check_date_pattern }
+
+```python
+check_date_pattern(v)
+```
+

@@ -1,0 +1,40 @@
+---
+marimo-static-output: true
+---
+
+# Entity { #json2vec.Entity }
+
+```python
+Entity()
+```
+
+Per-observation entity tensorfield request for local identity matching.
+
+## Attributes
+
+| Name | Description |
+| --- | --- |
+| [type](#json2vec.Entity.type) |  |
+| [topk](#json2vec.Entity.topk) |  |
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [check_topk](#json2vec.Entity.check_topk) |  |
+| [post_bind_validate](#json2vec.Entity.post_bind_validate) |  |
+
+### check_topk { #json2vec.Entity.check_topk }
+
+```python
+check_topk()
+```
+
+
+
+### post_bind_validate { #json2vec.Entity.post_bind_validate }
+
+```python
+post_bind_validate()
+```
+
