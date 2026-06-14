@@ -7,7 +7,6 @@ project:
 
 quartodoc:
   package: json2vec
-  source_dir: /Users/grantham/Desktop/json2vec-oss/src
   style: pkgdown
   dir: docs/reference
   out_index: api.qmd

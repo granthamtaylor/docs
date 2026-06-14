@@ -4,7 +4,7 @@ pyproject: |
   requires-python = ">=3.12"
   dependencies = [
     "marimo>=0.23.8",
-    "json2vec[serving] @ file:///Users/grantham/Desktop/json2vec-oss",
+    "json2vec[serving] @ git+https://github.com/json2vec/json2vec.git",
   ]
 ---
 

@@ -1,7 +1,7 @@
 # json2vec docs snapshot
 
-This repo contains a Quarto-rendered snapshot of selected `json2vec` docs copied
-from `/Users/grantham/Desktop/json2vec-oss/docs`.
+This repo contains a Quarto-rendered snapshot of selected `json2vec` docs based
+on [`json2vec/json2vec`](https://github.com/json2vec/json2vec).
 
 ## Quarto build
 
